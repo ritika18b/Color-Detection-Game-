@@ -21,7 +21,7 @@ This is a simple color game built using Python and the Tkinter library. The game
    cd https://github.com/ritika18b/Color-Detection-Game-
    
 
-2. **Install dependencies:**
+3. **Install dependencies:**
    This project requires Python 3.x and the Tkinter library. Tkinter usually comes pre-installed with Python. If it's not installed, you can install it via:
 
    - On Ubuntu:
@@ -32,7 +32,7 @@ This is a simple color game built using Python and the Tkinter library. The game
    - On Windows:
      Tkinter should be included with the Python installation.
 
-3. **Run the game:**
+4. **Run the game:**
    bash
    python color_game.py
    
