@@ -17,8 +17,8 @@ This is a simple color game built using Python and the Tkinter library. The game
 
 1. **Clone the repository:**
    bash
-   git clone <your-repository-url>
-   cd <your-repository-directory>
+   git clone https://github.com/ritika18b
+   cd https://github.com/ritika18b/Color-Detection-Game-
    
 
 2. **Install dependencies:**
