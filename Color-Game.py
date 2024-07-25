@@ -1,138 +1,115 @@
-# import the modules
-import tkinter
+import tkinter as tk
 import random
 
-colours = ['Red','Blue','Green','Pink','Black','Yellow','Orange','White','Purple','Brown']
+colours = ['Red', 'Blue', 'Green', 'Pink', 'Black', 'Yellow', 'Orange', 'White', 'Purple', 'Brown']
 score = 0
-
 timeleft = 30
 
+def removeGameOver():
+    gameOverLabel.pack_forget()
+    nameLabel.pack_forget()
+    name_entry.pack_forget()
+    submitButton.pack_forget()
+    leaderboard_instructions.pack_forget()
+
+def restartGame():
+    global score, timeleft
+    score = 0
+    timeleft = 30
+    scoreLabel.config(text="Press enter to start")
+    timeLabel.config(text="Time left: " + str(timeleft))
+    label.config(text="")
+    e.config(state="normal")
+    e.delete(0, tk.END)
+    e.focus_set()
+    removeGameOver()  # Call removeGameOver() to remove game over widgets
+
 def save():
-        f=open("score.txt" ,"a")
-        f.write(str (name.get()) +"     "+ str (score) + "\n")
-        f.close()
+    with open("score.txt", "a") as f:
+        f.write(f"{name_entry.get()}     {score}\n")
+    restartGame()
 
 def leaderboard(event):
-        lb =tkinter.Tk()
-        lb.geometry("300x300")
-        f=open("score.txt" ,"r+")
-        tkinter.Label(lb ,text="Name"+"   "+"Score",font = ('Arialblack', 12)).pack(side="top")
-        tkinter.Label(lb ,text= f.read()).pack()
-        f.close()
-        lb.mainloop()
-        
+    lb = tk.Toplevel(root)
+    lb.geometry("300x300")
+    with open("score.txt", "r") as f:
+        tk.Label(lb, text="Name       Score", font=('Arial Black', 12)).pack(side="top")
+        tk.Label(lb, text=f.read(), font=('Helvetica', 10)).pack()
+    lb.mainloop()
 
-# function that will start the game.
 def startGame(event):
-    
+    global timeleft
     if timeleft == 30:
-        
-        # start the countdown timer.
         countdown()
-        
-    # run the function to  choose the next colour.
     nextColour()
 
-# Function to choose and
-# display the next colour.
 def nextColour():
-
-    # use the globally declared 'score'
-    # and 'play' variables above.
     global score
     global timeleft
-
-    # if a game is currently in play
     if timeleft > 0:
-
-        # make the text entry box active.
         e.focus_set()
-
-        # if the colour typed is equal
-        # to the colour of the text
         if e.get().lower() == colours[1].lower():
-            
             score += 1
-
-        # clear the text entry box.
-        e.delete(0, tkinter.END)
-        
+        e.delete(0, tk.END)
         random.shuffle(colours)
-        
-        # change the colour to type, by changing the
-        # text and the colour to a random colour value
-        label.config(fg = str(colours[1]), text = str(colours[0]))
-        
-        # update the score.
-        scoreLabel.config(text = "Score: " + str(score))
+        label.config(fg=str(colours[1]), text=str(colours[0]))
+        scoreLabel.config(text="Score: " + str(score))
 
-
-# Countdown timer function
 def countdown():
-
     global timeleft
-    global name
-
-    # if a game is in play
     if timeleft > 0:
-
-        # decrement the timer.
         timeleft -= 1
-        
-        # update the time left label
-        timeLabel.config(text = "Time left: "+ str(timeleft))
-                                
-        # run the function again after 1 second.
+        timeLabel.config(text="Time left: " + str(timeleft))
         timeLabel.after(1000, countdown)
-
     else:
-        tkinter.Label(text = "You  loose",font = ('Helvetica', 12)).pack()
-        e.config(state="disabled")
-        name = tkinter.Entry()
-        tkinter.Label( text="Enter your name",font = ('Helvetica', 12)).pack()
-        name.pack()
-        tkinter.Button(text="Submit",command=save).pack()
-        
-# Driver Code
+        gameOver()
 
-# create a GUI window
-root = tkinter.Tk()
+def gameOver():
+    e.config(state="disabled")
+    global gameOverLabel, nameLabel, name_entry, submitButton
+    gameOverLabel = tk.Label(root, text="You Lose!", font=('Helvetica', 12), fg='red')
+    gameOverLabel.pack()
+    nameLabel = tk.Label(root, text="Enter your name:", font=('Helvetica', 12))
+    nameLabel.pack()
+    name_entry = tk.Entry(root)
+    name_entry.pack()
+    submitButton = tk.Button(root, text="Submit", command=save)
+    submitButton.pack()
+    # Add instructions label for leaderboard
+    global leaderboard_instructions
+    leaderboard_instructions = tk.Label(root, text="Press Spacebar to view Leaderboard", font=('Helvetica', 12))
+    leaderboard_instructions.pack(pady=5)
 
-# set the title
+# Create a GUI window
+root = tk.Tk()
 root.title("COLORGAME")
-
-# set the size
 root.geometry("400x500")
 
-# add an instructions label
-instructions = tkinter.Label(root, text = " Detect The Colour ,Write The Colour Name",font = ('Arial Black', 12))
-instructions.pack()
+# Add instructions label
+instructions = tk.Label(root, text="Detect The Colour, Write The Colour Name", font=('Arial Black', 12))
+instructions.pack(pady=10)
 
-# add a score label
-scoreLabel = tkinter.Label(root, text = "Press enter to start",font = ('Helvetica', 12))
-scoreLabel.pack()
+# Add score label
+scoreLabel = tk.Label(root, text="Press enter to start", font=('Helvetica', 12))
+scoreLabel.pack(pady=10)
 
-# add a time left label
-timeLabel = tkinter.Label(root, text = "Time left: " + str(timeleft), font = ('Helvetica', 12))
-                
-timeLabel.pack()
+# Add time left label
+timeLabel = tk.Label(root, text="Time left: " + str(timeleft), font=('Helvetica', 12))
+timeLabel.pack(pady=10)
 
-# add a label for displaying the colours
-label = tkinter.Label(root, font = ('Helvetica', 60))
-label.pack()
+# Add a label for displaying the colours
+label = tk.Label(root, font=('Helvetica', 60))
+label.pack(pady=20)
 
-# add a text entry box for
-# typing in colours
-e = tkinter.Entry(root)
+# Add a text entry box for typing in colours
+e = tk.Entry(root, font=('Helvetica', 14))
+e.pack(pady=10)
 
-# run the 'startGame' function
-# when the enter key is pressed
+# Bind the startGame function to the Enter key
 root.bind('<Return>', startGame)
-root.bind("<space>" , leaderboard)
-e.pack()
+root.bind("<space>", leaderboard)
 
-# set focus on the entry box
 e.focus_set()
 
-# start the GUI
+# Start the GUI
 root.mainloop()
